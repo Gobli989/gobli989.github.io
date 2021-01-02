@@ -8,10 +8,69 @@
     <p>Vertikális téglalapmennyiség: <input oninput="update()" id="vert" type="number" value="5" step="1"> db</p>
     <p>Horizontális tájolás: <input oninput="update()" id="ha" type="number" value="0" step="1"> db</p>
     <p>Vertikális tájolás: <input oninput="update()" id="va" type="number" value="0" step="1"> db</p>
-    <canvas width="1080" height="1920" id="canvas"></canvas>
+    <p>Kitöltés:
+        <select id="s" onchange="changedSelect()">
+            <option value="n" selected>Semmi</option>
+            <option value="i">Képfájl</option>
+            <option value="c">Szín</option>
+        </select>
+    </p>
+    <p>V alakú elhelyezés: <input id="v" onchange="update()" type="checkbox"></p>
+    <div id="image">
+        <p>Képfájl: <input id="img" type="file" onchange="fileUpload(this.files)" capture="camera"></p>
+    </div>
+    <div id="color">
+        <p>Elsődleges Szín: <input id="clr1" onchange="update()" type="color"></p>
+        <p>Másodlagos Szín: <input id="clr2" onchange="update()" type="color"></p>
+    </div>
+
+    <canvas width="1080" height="1920" id="canvas" style="border: 1px solid black;"></canvas>
+
     <script>
         var canvas = document.getElementById('canvas');
         var ctx = canvas.getContext('2d');
+
+        var file, image, fileURL;
+
+        function changedSelect() {
+            var s = document.getElementById('s').value;
+
+            switch (s) {
+                case "n": {
+                    document.getElementById('image').style.display = "none";
+                    document.getElementById('color').style.display = "none";
+                    break;
+                }
+                case "i": {
+                    document.getElementById('image').style.display = "block";
+                    document.getElementById('color').style.display = "none";
+                    break;
+                }
+                case "c": {
+                    document.getElementById('image').style.display = "none";
+                    document.getElementById('color').style.display = "block";
+                    break;
+                }
+            }
+        }
+
+        changedSelect();
+
+        function fileUpload(files) {
+            file = files[0]
+            fileURL = URL.createObjectURL(file)
+            canvas = document.getElementById('myCanvas')
+            canvas.style.backgroundColor = "blue"
+            ctx = canvas.getContext('2d')
+            image = new Image()
+
+            image.onload = function () {
+                canvas.width = 500
+                canvas.height = (500 * this.height) / this.width
+                ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
+            }
+            image.src = fileURL
+        }
 
         function update() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -24,13 +83,43 @@
             var ha = document.getElementById('ha').value;
             var va = document.getElementById('va').value;
 
+            var color1 = document.getElementById('clr1').value;
+            var color2 = document.getElementById('clr2').value;
+            var v = document.getElementById('v').value == 'on';
+
             ctx.save();
 
             ctx.rotate(angle * Math.PI / 180);
+            var index = 0;
 
-            for(var y = va; y < vert; y++) {
-                for(var x = ha; x < hori; x++) {
-                    ctx.strokeRect(width * 72 * x, height * 72 * y, width * 72, height * 72);
+            if (!v) {
+
+                for (var y = va; y < vert; y++) {
+                    for (var x = ha; x < hori; x++) {
+
+                        if (index % 2 == 0 && color1 != undefined) ctx.fillStyle = color1;
+                        if (index % 2 == 1 && color2 != undefined) ctx.fillStyle = color2;
+
+                        if (color1 != undefined)
+                            ctx.fillRect(width * 72 * x, height * 72 * y, width * 72, height * 72);
+                        else
+                            ctx.strokeRect(width * 72 * x, height * 72 * y, width * 72, height * 72);
+                        index++;
+                    }
+                    if (y % 2 == 0) index++;
+                }
+
+            } else {
+                for (var y = va; y < vert; y++) {
+                    if (index % 2 == 0 && color1 != undefined) ctx.fillStyle = color1;
+                    if (index % 2 == 1 && color2 != undefined) ctx.fillStyle = color2;
+
+                    if (color1 != undefined)
+                        ctx.fillRect(width * 72 * x, height * 72 * y, width * 72, height * 72);
+                    else
+                        ctx.strokeRect(width * 72 * x, height * 72 * y, width * 72, height * 72);
+
+                    index++;
                 }
             }
 
