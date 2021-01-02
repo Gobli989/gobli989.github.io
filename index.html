@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<body>
+    <p>Szélesség: <input oninput="update()" id="width" type="number" value="1" step="0.1"> cm</p>
+    <p>Magassága: <input oninput="update()" id="height" type="number" value="1" step="0.1"> cm</p>
+    <p>Dőlésszög: <input oninput="update()" id="angle" type="number" value="0" step="1"> °</p>
+    <p>Horizontális téglalapmennyiség: <input oninput="update()" id="hori" type="number" value="5" step="1"> db</p>
+    <p>Vertikális téglalapmennyiség: <input oninput="update()" id="vert" type="number" value="5" step="1"> db</p>
+    <p>Horizontális tájolás: <input oninput="update()" id="ha" type="number" value="0" step="1"> db</p>
+    <p>Vertikális tájolás: <input oninput="update()" id="va" type="number" value="0" step="1"> db</p>
+    <canvas width="1080" height="1920" id="canvas"></canvas>
+    <script>
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            var angle = document.getElementById('angle').value;
+            var width = document.getElementById('width').value;
+            var height = document.getElementById('height').value;
+            var hori = document.getElementById('hori').value;
+            var vert = document.getElementById('vert').value;
+            var ha = document.getElementById('ha').value;
+            var va = document.getElementById('va').value;
+
+            ctx.save();
+
+            ctx.rotate(angle * Math.PI / 180);
+
+            for(var y = va; y < vert; y++) {
+                for(var x = ha; x < hori; x++) {
+                    ctx.strokeRect(width * 72 * x, height * 72 * y, width * 72, height * 72);
+                }
+            }
+
+            ctx.restore();
+        }
+
+        update();
+    </script>
+</body>
