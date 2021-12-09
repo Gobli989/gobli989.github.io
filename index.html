@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gobli989's site</title>
 
-    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="css/_global.css" type="text/css">
+    <link rel="stylesheet" href="css/HomePage.css" type="text/css">
+    <script src="js/_global.js" defer></script>
+    <script src="js/Pages.js" defer></script>
     <script src="js/Search.js" defer></script>
 </head>
-<body>
-    <div class="container">
+
+<body class="center">
+    <div>
         <h1 class="text-center">Gobli989's site</h1>
 
         <div class="search-part">
             <h2>Search for your needs</h2>
             <input type="text" id="search" placeholder="Search" oninput="search()">
-            <div id="search-results"></div>
         </div>
-
+        
+        <ul id="search-result"></ul>
     </div>
+    
 </body>
+
 </html>
